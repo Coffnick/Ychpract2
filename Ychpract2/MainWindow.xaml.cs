@@ -1,6 +1,8 @@
 ﻿using MaterialDesignThemes.Wpf;
+using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +23,7 @@ namespace Ychpract2
     /// </summary>
     public partial class MainWindow : Window
     {
+        Db database = new Db();
         public MainWindow()
         {
             InitializeComponent();
@@ -29,19 +32,38 @@ namespace Ychpract2
         {
             string login = Login.Text;
             string password = Password.Password;
-            if (password.Trim()==""||login.Trim()=="")
+
+            DataTable dt = new DataTable();
+            database.openCon();
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            
+
+            string sqlQuery = $"select id_Storekeeper,Password,Login from Storekeepers where Password ='{password}' and Login = '{login}'";
+
+            SqlCommand command = new SqlCommand(sqlQuery, database.getConnection());
+
+            adapter.SelectCommand = command;
+     
+            var role = command.ExecuteScalar();
+            adapter.Fill(dt);
+
+            if (dt.Rows.Count == 1)
             {
-                MessageBox.Show("Аккаунт не существует или у вас нет доступа", "Warning", MessageBoxButton.OK, MessageBoxImage.Information);
+                if (role != null)
+                {
+                    
+                    MessageBox.Show("Вы успешно вошли в систему", "Сообщение", MessageBoxButton.OK, MessageBoxImage.Information);
+                    Choice ch = new Choice();
+                    this.Close();
+                    ch.ShowDialog();
+                }
+                else
+                    MessageBox.Show("Аккаунт не существует или у вас нет доступа", "Warning", MessageBoxButton.OK, MessageBoxImage.Information);
+
             }
             else
-            {
-                MessageBox.Show("Вы успешно вошли в систему", "Сообщение", MessageBoxButton.OK, MessageBoxImage.Information);
-                Choice ch = new Choice();
-                 this.Close();
-                 ch.ShowDialog();
-            }
-            
-            
+                MessageBox.Show("Аккаунт не существует или у вас нет доступа", "Warning", MessageBoxButton.OK, MessageBoxImage.Information);
+ 
         }
     }
 }
