@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -73,19 +74,51 @@ namespace Ychpract2
 
             foreach (DataRow row in dt.Rows)
             {
-                int id_Clients = Convert.ToInt32(row["id_Clients"]);
-                string Name = row["Name"].ToString();
-                int phone = Convert.ToInt32(row["phone"]);
-                string Lname = row["Lname"].ToString();
+                int id = Convert.ToInt32(row["id"]);
+                int storekeeper = Convert.ToInt32(row["storekeeper"]);
+                string Client = row["Client"].ToString();
+                string Date = row["Date"].ToString();
+                int price = Convert.ToInt32(row["price"]);
+                string goods = row["goods"].ToString();
 
 
-                string query = "UPDATE Clients SET Name = @Name ,phone = @phone,Lname=@Lname WHERE id_Clients = @id_Clients";
+                string query = "UPDATE prixod SET storekeeper = @storekeeper ,Client = @Client,Date=@Date,goods=@goods,price=@price WHERE id = @id";
                 SqlCommand command = new SqlCommand(query, database.getConnection());
 
-                command.Parameters.AddWithValue("@id_Clients", id_Clients);
-                command.Parameters.AddWithValue("@Name", Name);
-                command.Parameters.AddWithValue("@phone", phone);
-                command.Parameters.AddWithValue("@Lname", Lname);
+                command.Parameters.AddWithValue("@id", id);
+                command.Parameters.AddWithValue("@storekeeper", storekeeper);
+                command.Parameters.AddWithValue("@Client", Client);
+                command.Parameters.AddWithValue("@Date", Date);
+                command.Parameters.AddWithValue("@price", price);
+                command.Parameters.AddWithValue("@goods", goods);
+
+                command.ExecuteNonQuery();
+            }
+        }
+        private void saveRasxod()
+        {
+            database.openCon();
+            DataTable dt = ((DataView)AdminDataGridRasxod.ItemsSource).ToTable();
+
+            foreach (DataRow row in dt.Rows)
+            {
+                int id = Convert.ToInt32(row["id"]);
+                int Storekeeper = Convert.ToInt32(row["Storekeeper"]);
+                string Client = row["Client"].ToString();
+                string date = row["date"].ToString();
+                int price = Convert.ToInt32(row["price"]);
+                string goods = row["goods"].ToString();
+
+
+                string query = "UPDATE rasxod SET Storekeeper = @Storekeeper ,Client = @Client,date=@date,goods=@goods,price=@price WHERE id = @id";
+                SqlCommand command = new SqlCommand(query, database.getConnection());
+
+                command.Parameters.AddWithValue("@id", id);
+                command.Parameters.AddWithValue("@Storekeeper", Storekeeper);
+                command.Parameters.AddWithValue("@Client", Client);
+                command.Parameters.AddWithValue("@Date", date);
+                command.Parameters.AddWithValue("@price", price);
+                command.Parameters.AddWithValue("@goods", goods);
 
                 command.ExecuteNonQuery();
             }
@@ -96,11 +129,130 @@ namespace Ychpract2
             try
             {
                 save();
+                saveRasxod();
+                
             }
             catch (Exception)
             {
                 MessageBox.Show("Введены неверные значения!");
             }
+        }
+
+        private void insert()
+        {
+            database.openCon();
+
+
+            SqlDataAdapter da = new SqlDataAdapter("select id from prixod", database.getConnection());
+            DataSet ds = new DataSet();
+            da.Fill(ds, "id");
+
+            List<int> idListApp = new List<int>();
+            foreach (DataRow row in ds.Tables["id"].Rows)
+            {
+                idListApp.Add((int)row["id"]);
+            }
+
+            foreach (int _id in idListApp)
+            {
+                outputTextBox.Text = _id.ToString();
+            }
+
+            DataTable dt = ((DataView)AdminDataGrid.ItemsSource).ToTable();
+
+
+            int count = 0;
+            foreach (DataRow row in dt.Rows)
+            {
+
+                int id = Convert.ToInt32(row["id"]);            
+                int storekeeper = Convert.ToInt32(row["storekeeper"]);
+                string Client = row["Client"].ToString();
+                string Date = row["Date"].ToString();
+                int price = Convert.ToInt32(row["price"]);
+                string goods = row["goods"].ToString();
+
+                    
+                if (idListApp.Contains(id))
+                {
+                    count++;
+                }
+                else
+                {
+                    string query = "INSERT INTO prixod (id,storekeeper,Client,Date,price) VALUES (@id, @storekeeper,@Client,@Date,@price)";
+                    SqlCommand command = new SqlCommand(query, database.getConnection());
+                    command.Parameters.AddWithValue("@id", id);
+                    command.Parameters.AddWithValue("@storekeeper", storekeeper);
+                    command.Parameters.AddWithValue("@Client", Client);
+                    command.Parameters.AddWithValue("@Date", Date);
+                    command.Parameters.AddWithValue("@price", price);
+                    command.Parameters.AddWithValue("@goods", goods);
+                    command.ExecuteNonQuery();
+                }
+
+            }
+        }
+        private void insertrasxod()
+        {
+            database.openCon();
+
+
+            SqlDataAdapter da = new SqlDataAdapter("select id from rasxod", database.getConnection());
+            DataSet ds = new DataSet();
+            da.Fill(ds, "id");
+
+            List<int> idListApp = new List<int>();
+            foreach (DataRow row in ds.Tables["id"].Rows)
+            {
+                idListApp.Add((int)row["id"]);
+            }
+
+            DataTable dt = ((DataView)AdminDataGridRasxod.ItemsSource).ToTable();
+
+
+            int count = 0;
+            foreach (DataRow row in dt.Rows)
+            {
+
+                int id = Convert.ToInt32(row["id"]);
+                int storekeeper = Convert.ToInt32(row["storekeeper"]);
+                string Client = row["Client"].ToString();
+                string Date = row["Date"].ToString();
+                int price = Convert.ToInt32(row["price"]);
+                string goods = row["goods"].ToString();
+
+
+                if (idListApp.Contains(id))
+                {
+                    count++;
+                }
+                else
+                {
+                    string query = "INSERT INTO rasxod (id,storekeeper,Client,Date,price) VALUES (@id, @storekeeper,@Client,@Date,@price)";
+                    SqlCommand command = new SqlCommand(query, database.getConnection());
+                    command.Parameters.AddWithValue("@id", id);
+                    command.Parameters.AddWithValue("@storekeeper", storekeeper);
+                    command.Parameters.AddWithValue("@Client", Client);
+                    command.Parameters.AddWithValue("@Date", Date);
+                    command.Parameters.AddWithValue("@price", price);
+                    command.Parameters.AddWithValue("@goods", goods);
+                    command.ExecuteNonQuery();
+                }
+
+            }
+        }
+        private void InsertData_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                insert();
+                insertrasxod();
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Введены неверные значения!");
+            }
+
         }
     }
 }

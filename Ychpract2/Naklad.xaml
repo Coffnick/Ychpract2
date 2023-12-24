@@ -23,8 +23,10 @@
 
         </DockPanel>
         <DataGrid x:Name="AdminDataGrid" AutoGenerateColumns="True" Margin="10,113,0,0" HorizontalAlignment="Left" Width="385" Height="246" VerticalAlignment="Top"/>
-        <Button Content="Сохранить изменения" HorizontalAlignment="Center" Margin="0,364,0,0" Height="36" VerticalAlignment="Top" Width="140" Background="#FF31E6BD"/>
-        <DataGrid x:Name="AdminDataGridRasxod" AutoGenerateColumns="True" Margin="408,113,0,0" HorizontalAlignment="Left" Width="382" Height="246" VerticalAlignment="Top"/>
+        <Button Content="Сохранить изменения" Padding="0" HorizontalAlignment="Left" Margin="202,364,0,0" Height="36" VerticalAlignment="Top" Width="193" Background="#FF31E6BD" RenderTransformOrigin="0.277,0.637" Click="SaveData_Click"/>
+        <DataGrid x:Name="AdminDataGridRasxod" AutoGenerateColumns="True" Margin="408,113,0,0" HorizontalAlignment="Left" Width="382" Height="246" VerticalAlignment="Top"  />
+        <Button Content="Добавить запись" HorizontalAlignment="Left" Margin="408,364,0,0" Height="36" VerticalAlignment="Top" Width="191" Background="#FF31E6BD" Padding="0" Click="InsertData_Click" />
+        <TextBox x:Name="outputTextBox" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="760,364,10,10" RenderTransformOrigin="0.5,0.5"/>
 
     </Grid>
 </Window>
